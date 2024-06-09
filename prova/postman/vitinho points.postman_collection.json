@@ -1,0 +1,333 @@
+{
+	"info": {
+		"_postman_id": "080b270a-4ef0-4c54-9670-f5a207bc3437",
+		"name": "vitinho points",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33337651"
+	},
+	"item": [
+		{
+			"name": "list users",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 200\", function () {\r",
+							"  pm.response.to.have.status(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"First object has expected properties\", function () {\r",
+							"  pm.expect(pm.response.json()[0]).to.have.property(\"id\");\r",
+							"  pm.expect(pm.response.json()[0]).to.have.property(\"name\");\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASEURL}}/users",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "get user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"check if found\", function () {",
+							"    if(pm.response.code === 200){ ",
+							"        pm.expect(pm.response.status).to.equal(200);",
+							"        pm.expect(pm.response.json()).to.be.an('object');",
+							"        pm.expect(pm.response.json()).to.have.property(\"id\");",
+							"        pm.expect(pm.response.json()).to.have.property(\"name\");",
+							"    }",
+							"});",
+							"",
+							"pm.test(\"check if not found\", function () {",
+							"     if(pm.response.code === 404){ ",
+							"        pm.expect(pm.response.code).to.equal(404);",
+							"        pm.expect(pm.response.json()).to.be.an('object');",
+							"        pm.expect(pm.response.json().message).to.exist;",
+							"     }",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "{{BASEURL}}/users/:id",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "695516"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "delete user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Status code is 204\", function () {\r",
+							"   if(pm.response.status === 204){\r",
+							"        pm.response.to.have.status(204);\r",
+							"   }\r",
+							"});\r",
+							"\r",
+							"pm.test(\"check if not found\", function () {\r",
+							"     if(pm.response.code === 404){ \r",
+							"        pm.expect(pm.response.code).to.equal(404);\r",
+							"        pm.expect(pm.response.json()).to.be.an('object');\r",
+							"        pm.expect(pm.response.json().message).to.exist;\r",
+							"     }\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "DELETE",
+				"header": [],
+				"url": {
+					"raw": "{{BASEURL}}/users/:id",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "695400"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "edit user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response has the required fields - name, id, email, gender, and status\", function () {\r",
+							"    if(pm.response.status === 200){\r",
+							"    const responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.have.property('name');\r",
+							"    pm.expect(responseData).to.have.property('id');\r",
+							"    pm.expect(responseData).to.have.property('email');\r",
+							"    pm.expect(responseData).to.have.property('gender');\r",
+							"    pm.expect(responseData).to.have.property('status');\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"\r",
+							"\r",
+							"\r",
+							"pm.test(\"check if not found\", function () {\r",
+							"     if(pm.response.code === 404){ \r",
+							"        pm.expect(pm.response.code).to.equal(404);\r",
+							"        pm.expect(pm.response.json()).to.be.an('object');\r",
+							"        pm.expect(pm.response.json().message).to.exist;\r",
+							"     }\r",
+							"});\r",
+							"\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"amo o vitinho\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASEURL}}/users/:id",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"users",
+						":id"
+					],
+					"variable": [
+						{
+							"key": "id",
+							"value": "695400"
+						}
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create user",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"",
+							"pm.test(\"Error: Email already taken\", function () {",
+							"  if(pm.response.status === 422){",
+							"    pm.response.to.have.status(422);",
+							"    pm.expect(pm.response.json()).to.be.an(\"array\");",
+							"    pm.expect(pm.response.json()[0]).to.be.an(\"object\");",
+							"    pm.expect(pm.response.json()[0]).to.have.property(\"field\", \"email\");",
+							"    pm.expect(pm.response.json()[0]).to.have.property(\"message\", \"has already been taken\");",
+							"  }",
+							"});",
+							"",
+							"pm.test(\"Response has the required fields\", function () {",
+							"    const responseData = pm.response.json();",
+							"    if(pm.response.status === 201){",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData).to.include.all.keys('id', 'name', 'email', 'gender', 'status');",
+							"    }",
+							"});",
+							"",
+							"",
+							"pm.test(\"Email is in a valid format\", function () {",
+							"    const responseData = pm.response.json();",
+							"     if(pm.response.status === 201){",
+							"    pm.expect(responseData).to.be.an('object');",
+							"    pm.expect(responseData.email).to.match(/^[^\\s@]+@[^\\s@]+\\.[^\\s@]+$/, \"Email is not in a valid format\");",
+							"    }",
+							"});",
+							"",
+							"",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "{{token}}",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\"name\":\"1 \", \"gender\":\"male\", \"email\":\"1.ramak1rishna@15ce.com\", \"status\":\"active\"}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "{{BASEURL}}/users",
+					"host": [
+						"{{BASEURL}}"
+					],
+					"path": [
+						"users"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
