@@ -1,0 +1,395 @@
+{
+	"info": {
+		"_postman_id": "2618e98c-3974-48b1-9f1f-86f96fb7795a",
+		"name": "sync",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json",
+		"_exporter_id": "33337651"
+	},
+	"item": [
+		{
+			"name": "login",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response status code is 201\", function () {\r",
+							"    pm.expect(pm.response.code).to.equal(201);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has the required fields - accessToken and refreshToken\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.accessToken).to.exist;\r",
+							"    pm.expect(responseData.refreshToken).to.exist;\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Access token and refresh token are not empty strings\", function () {\r",
+							"    const responseData = pm.response.json();\r",
+							"\r",
+							"    pm.expect(responseData).to.be.an('object');\r",
+							"    pm.expect(responseData.accessToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Access token should not be empty\");\r",
+							"    pm.expect(responseData.refreshToken).to.be.a('string').and.to.have.lengthOf.at.least(1, \"Refresh token should not be empty\");\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 500ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(500);\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"username\": \"admin@example.com\",\r\n    \"password\": \"Ch4ng3P@ssw0rd!\"\r\n}\r\n\r\n// admin@example.com -> ADMIN\r\n// employee@example.com -> Employee\r\n// customer@example.com -> Customer",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-synctime.tdevs.studio/auth/login",
+					"protocol": "https",
+					"host": [
+						"api-synctime",
+						"tdevs",
+						"studio"
+					],
+					"path": [
+						"auth",
+						"login"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "health",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Response schema is valid\", function () {\r",
+							"    var schema = {\r",
+							"        type: \"object\",\r",
+							"        properties: {\r",
+							"            status: {\r",
+							"                type: \"string\"\r",
+							"            }\r",
+							"        },\r",
+							"        required: [\"status\"],\r",
+							"    };\r",
+							"\r",
+							"    pm.expect(tv4.validate(pm.response.json(), schema)).to.be.true;\r",
+							"});\r",
+							""
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"method": "GET",
+				"header": [],
+				"url": {
+					"raw": "https://api-synctime.tdevs.studio/health",
+					"protocol": "https",
+					"host": [
+						"api-synctime",
+						"tdevs",
+						"studio"
+					],
+					"path": [
+						"health"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list company",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Unauthorized if not admin\", function () {\r",
+							"    if (pm.response.code === 401) {\r",
+							"        pm.expect(pm.response.json().message).to.eql(\"Unauthorized\")\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is an array\", function () {\r",
+							"     if (pm.response.code === 200) {\r",
+							"    pm.expect(pm.response.json()).to.be.an('array');\r",
+							"     }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZiZjczZDJmLWMyOWMtNDQ4My05YjkwLThiODJlMGM1ZjVlYyIsIm5hbWUiOiJBRE1JTiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJsYXN0TG9naW4iOiIyMDI0LTA2LTEwVDAxOjAzOjMyLjEyM1oiLCJsb2NrZWQiOmZhbHNlLCJkZWxldGVkQXQiOm51bGwsImNyZWF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsInVwZGF0ZWRBdCI6IjIwMjQtMDYtMTBUMDE6MDM6MzIuMTI0WiIsImN1c3RvbWVyIjpudWxsLCJhZG1pbiI6eyJpZCI6IjYxNzY4YjNlLTQxZjctNDUzOC04NGJhLWYwN2JjM2ZmMzQyYSIsImNyZWF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsInVwZGF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsImRlbGV0ZWRBdCI6bnVsbCwidXNlcklkIjoiZmJmNzNkMmYtYzI5Yy00NDgzLTliOTAtOGI4MmUwYzVmNWVjIn0sImVtcGxveWVlIjpudWxsLCJwZXJtaXNzaW9ucyI6W10sInJvbGUiOiJBRE1JTiIsInN1YiI6ImZiZjczZDJmLWMyOWMtNDQ4My05YjkwLThiODJlMGM1ZjVlYyIsImlhdCI6MTcxNzk4NDExNywiZXhwIjoxNzE4MDcwNTE3fQ.CvYbjDivVneN8HN3qpJB_dOw8BnBNwWa7MLXWkUfMeA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n    \"name\": \"teste\",\r\n    \"cnpj\": \"0001\",\r\n    \"phone\": \"DDD 31 ALA\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-synctime.tdevs.studio/company",
+					"protocol": "https",
+					"host": [
+						"api-synctime",
+						"tdevs",
+						"studio"
+					],
+					"path": [
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "list customers",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Unauthorized if not admin\", function () {\r",
+							"    if (pm.response.code === 401) {\r",
+							"        pm.expect(pm.response.json().message).to.eql(\"Unauthorized\")\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response is an array\", function () {\r",
+							"     if (pm.response.code === 200) {\r",
+							"    pm.expect(pm.response.json()).to.be.an('array');\r",
+							"     }\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"protocolProfileBehavior": {
+				"disableBodyPruning": true
+			},
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZiZjczZDJmLWMyOWMtNDQ4My05YjkwLThiODJlMGM1ZjVlYyIsIm5hbWUiOiJBRE1JTiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJsYXN0TG9naW4iOiIyMDI0LTA2LTEwVDAxOjU1OjEwLjExOFoiLCJsb2NrZWQiOmZhbHNlLCJkZWxldGVkQXQiOm51bGwsImNyZWF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsInVwZGF0ZWRBdCI6IjIwMjQtMDYtMTBUMDE6NTU6MTAuMTE5WiIsImN1c3RvbWVyIjpudWxsLCJhZG1pbiI6eyJpZCI6IjYxNzY4YjNlLTQxZjctNDUzOC04NGJhLWYwN2JjM2ZmMzQyYSIsImNyZWF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsInVwZGF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsImRlbGV0ZWRBdCI6bnVsbCwidXNlcklkIjoiZmJmNzNkMmYtYzI5Yy00NDgzLTliOTAtOGI4MmUwYzVmNWVjIn0sImVtcGxveWVlIjpudWxsLCJwZXJtaXNzaW9ucyI6W10sInJvbGUiOiJBRE1JTiIsInN1YiI6ImZiZjczZDJmLWMyOWMtNDQ4My05YjkwLThiODJlMGM1ZjVlYyIsImlhdCI6MTcxNzk4NDU4NCwiZXhwIjoxNzE4MDcwOTg0fQ.1lZrYDsfqkbXzIDlZ7EJ2QPbQ0m0-k6OlPszJtx-uWM",
+							"type": "string"
+						}
+					]
+				},
+				"method": "GET",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"name\": \"Service Name\",\r\n  \"description\": \"Service Description\",\r\n  \"time\": 60,\r\n  \"price\": 10.5,\r\n  \"categoryId\": \"category-id\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-synctime.tdevs.studio/customer",
+					"protocol": "https",
+					"host": [
+						"api-synctime",
+						"tdevs",
+						"studio"
+					],
+					"path": [
+						"customer"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "create company",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Unauthorized if not admin\", function () {\r",
+							"    if (pm.response.code === 401) {\r",
+							"        pm.expect(pm.response.json().message).to.eql(\"Unauthorized\")\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response has a UUID ID\", function () {\r",
+							"    if(pm.response.code === 201)\r",
+							"        pm.expect(pm.response.json().id).to.be.a('string').and.to.match(/[0-9a-fA-F]{8}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{4}-[0-9a-fA-F]{12}/);\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZiZjczZDJmLWMyOWMtNDQ4My05YjkwLThiODJlMGM1ZjVlYyIsIm5hbWUiOiJBRE1JTiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJsYXN0TG9naW4iOiIyMDI0LTA2LTEwVDAxOjAzOjMyLjEyM1oiLCJsb2NrZWQiOmZhbHNlLCJkZWxldGVkQXQiOm51bGwsImNyZWF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsInVwZGF0ZWRBdCI6IjIwMjQtMDYtMTBUMDE6MDM6MzIuMTI0WiIsImN1c3RvbWVyIjpudWxsLCJhZG1pbiI6eyJpZCI6IjYxNzY4YjNlLTQxZjctNDUzOC04NGJhLWYwN2JjM2ZmMzQyYSIsImNyZWF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsInVwZGF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsImRlbGV0ZWRBdCI6bnVsbCwidXNlcklkIjoiZmJmNzNkMmYtYzI5Yy00NDgzLTliOTAtOGI4MmUwYzVmNWVjIn0sImVtcGxveWVlIjpudWxsLCJwZXJtaXNzaW9ucyI6W10sInJvbGUiOiJBRE1JTiIsInN1YiI6ImZiZjczZDJmLWMyOWMtNDQ4My05YjkwLThiODJlMGM1ZjVlYyIsImlhdCI6MTcxNzk4NDExNywiZXhwIjoxNzE4MDcwNTE3fQ.CvYbjDivVneN8HN3qpJB_dOw8BnBNwWa7MLXWkUfMeA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "POST",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"cnpj\": \"0011.000.000/0000-00\",\r\n  \"name\": \"1 name\",\r\n  \"phone\": \"(00) 00000-0000\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-synctime.tdevs.studio/company",
+					"protocol": "https",
+					"host": [
+						"api-synctime",
+						"tdevs",
+						"studio"
+					],
+					"path": [
+						"company"
+					]
+				}
+			},
+			"response": []
+		},
+		{
+			"name": "update company",
+			"event": [
+				{
+					"listen": "test",
+					"script": {
+						"exec": [
+							"pm.test(\"Unauthorized if not admin\", function () {\r",
+							"    if (pm.response.code === 401) {\r",
+							"        pm.expect(pm.response.json().message).to.eql(\"Unauthorized\")\r",
+							"    }\r",
+							"});\r",
+							"\r",
+							"\r",
+							"pm.test(\"Response time is less than 200ms\", function () {\r",
+							"    pm.expect(pm.response.responseTime).to.be.below(200);\r",
+							"});\r",
+							"\r",
+							"pm.test(\"Response has a name '1 name' and an id\", function () {\r",
+							"    var responseData = pm.response.json();\r",
+							"    pm.expect(responseData).to.have.property('name', '1 name');\r",
+							"    pm.expect(responseData).to.have.property('id');\r",
+							"});"
+						],
+						"type": "text/javascript",
+						"packages": {}
+					}
+				}
+			],
+			"request": {
+				"auth": {
+					"type": "bearer",
+					"bearer": [
+						{
+							"key": "token",
+							"value": "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6ImZiZjczZDJmLWMyOWMtNDQ4My05YjkwLThiODJlMGM1ZjVlYyIsIm5hbWUiOiJBRE1JTiIsImVtYWlsIjoiYWRtaW5AZXhhbXBsZS5jb20iLCJsYXN0TG9naW4iOiIyMDI0LTA2LTEwVDAxOjAzOjMyLjEyM1oiLCJsb2NrZWQiOmZhbHNlLCJkZWxldGVkQXQiOm51bGwsImNyZWF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsInVwZGF0ZWRBdCI6IjIwMjQtMDYtMTBUMDE6MDM6MzIuMTI0WiIsImN1c3RvbWVyIjpudWxsLCJhZG1pbiI6eyJpZCI6IjYxNzY4YjNlLTQxZjctNDUzOC04NGJhLWYwN2JjM2ZmMzQyYSIsImNyZWF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsInVwZGF0ZWRBdCI6IjIwMjQtMDItMjZUMDE6NTg6MjYuMTQzWiIsImRlbGV0ZWRBdCI6bnVsbCwidXNlcklkIjoiZmJmNzNkMmYtYzI5Yy00NDgzLTliOTAtOGI4MmUwYzVmNWVjIn0sImVtcGxveWVlIjpudWxsLCJwZXJtaXNzaW9ucyI6W10sInJvbGUiOiJBRE1JTiIsInN1YiI6ImZiZjczZDJmLWMyOWMtNDQ4My05YjkwLThiODJlMGM1ZjVlYyIsImlhdCI6MTcxNzk4NDExNywiZXhwIjoxNzE4MDcwNTE3fQ.CvYbjDivVneN8HN3qpJB_dOw8BnBNwWa7MLXWkUfMeA",
+							"type": "string"
+						}
+					]
+				},
+				"method": "PUT",
+				"header": [],
+				"body": {
+					"mode": "raw",
+					"raw": "{\r\n  \"cnpj\": \"0011.000.000/0000-00\",\r\n  \"name\": \"1 name\",\r\n  \"phone\": \"(00) 00000-0000\"\r\n}",
+					"options": {
+						"raw": {
+							"language": "json"
+						}
+					}
+				},
+				"url": {
+					"raw": "https://api-synctime.tdevs.studio/company",
+					"protocol": "https",
+					"host": [
+						"api-synctime",
+						"tdevs",
+						"studio"
+					],
+					"path": [
+						"company"
+					]
+				}
+			},
+			"response": []
+		}
+	]
+}
